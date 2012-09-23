@@ -53,7 +53,7 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
 
         // metadata driver
         $container->addDefinition($this->prefix('metadataDriver'))
-            ->setClass('Doctrine\ORM\Mapping\Driver\Driver')
+            ->setClass('Doctrine\ORM\Mapping\Driver\AnnotationDriver')
             ->setFactory('Impressa\Config\Extensions\DoctrineExtension::createYamlMetadataDriver', array(
             '%database.mappings%'
         ));
