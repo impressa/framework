@@ -118,6 +118,8 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
         $em = \Doctrine\ORM\EntityManager::create(self::createConnection($container->parameters['database'], $conf), $conf);
 
 
+
+
         foreach ($drv->getAllClassNames() as $className) {
             try {
                 $meta = $em->getClassMetadata($className);
@@ -188,7 +190,7 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
      * @param \Doctrine\Common\Cache\Cache
      * @param array
      * @param bool
-     * @return \Doctrine\ORM\Mapping\Driver\Driver
+     * @return \Doctrine\ORM\Mapping\Driver\AnnotationDriver
      */
     public static function createXmlMetadataDriver(array $xmlDirs)
     {
