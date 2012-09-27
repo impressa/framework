@@ -13,30 +13,34 @@ Nette\DI\ContainerBuilder,
 Doctrine\Common\Cache\Cache,
 Nette\Framework;
 
-class Impressa extends \Nette\Config\CompilerExtension
+class ImpressaExtension extends \Nette\Config\CompilerExtension
 {
 
     public $defaults = array(
         'imageManager' => array(
             'basePath' => '/files/images',
             'mapping' => array(),
-        )
+        ),
+		'mailer' => array(
+			'templatesPath' => '%appDir%/templates/Emails'
+		)
     );
 
     public function loadConfiguration()
     {
 
-        $config = $this->getConfig();
+			$config = $this->getConfig($this->defaults);
         $container = $this->getContainerBuilder();
 
-        $container->addDefinition('imageManager')->setClass('\Impressa\ImageManager\ImageService')
-            ->setFactory('Impressa\Config\Extensions\Impressa::createImageManager',array('%wwwDir%', $config['imageManager']));
-        $latte = $container->getDefinition('nette.latte');
-        $latte->addSetup('\Impressa\ImageManager\ImageService::installLatteMacros', array('@nette.latte'));
+//        $container->addDefinition('imageManager')->setClass('\Impressa\ImageManager\ImageService')
+//            ->setFactory('Impressa\Config\Extensions\Impressa::createImageManager',array('%wwwDir%', $config['imageManager']));
+//        $latte = $container->getDefinition('nette.latte');
+//        $latte->addSetup('\Impressa\ImageManager\ImageService::installLatteMacros', array('@nette.latte'));
+//
+//        $container->addDefinition('ecomm')->setClass('\Impressa\Payments\Ecomm')
+//            ->setFactory('Impressa\Config\Extensions\Impressa::createEcommService',array($config['ecomm']['url'], $config['ecomm']['keyStore'], $config['ecomm']['keyStorePassword']));
 
-        $container->addDefinition('ecomm')->setClass('\Impressa\Payments\Ecomm')
-            ->setFactory('Impressa\Config\Extensions\Impressa::createEcommService',array($config['ecomm']['url'], $config['ecomm']['keyStore'], $config['ecomm']['keyStorePassword']));
-
+		$container->addDefinition($this->prefix('mailer'))->setClass('\Impressa\Mail\Mailer', array('@nette.mailFactory', '@application', $config['mailer']['templatesPath']));
     }
 
 
