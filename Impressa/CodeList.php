@@ -22,4 +22,4 @@ abstract class CodeList {
         $codes = static::getCodes();
         return $codes[$code];
     }
-} 
+}   
