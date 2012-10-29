@@ -49,4 +49,8 @@ class DatePicker extends \Nette\Forms\Controls\TextBase{
 
     }
 
+	public function isFilled(){
+		return $this->getValue() != NULL;
+	}
+
 }
