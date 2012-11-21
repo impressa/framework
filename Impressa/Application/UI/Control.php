@@ -40,6 +40,12 @@ class Control extends \Nette\Application\UI\Control{
 
 	}
 
+	public function createTemplate($class = NULL) {
+		$template = parent::createTemplate($class);
+		$template->setTranslator($this->presenter->translator);
+		return $template;
+	}
+
 }
 
 
