@@ -22,4 +22,9 @@ class BaseRepository extends \Doctrine\ORM\EntityRepository
         return new \Impressa\Doctrine\PaginatedResult($results);
     }
 
+	public function checkUniqueValue($fieldName, $fieldValue, Entity $entity = null){
+		$existingEntity = $this->findOneBy(array($fieldName => $fieldValue));
+		return !($existingEntity && $existingEntity != $entity);
+	}
+
 }

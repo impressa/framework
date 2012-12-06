@@ -233,6 +233,8 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
         $configuration->addCustomHydrationMode('KeyValueHydrator', 'Impressa\Doctrine\KeyValueHydrator');
         $configuration->addCustomHydrationMode('ImpressaHydrator', 'Impressa\Doctrine\ObjectHydrator');
 
+		$configuration->setDefaultRepositoryClassName('Impressa\Doctrine\BaseRepository');
+
         $configuration->addCustomNumericFunction('RAND', 'Impressa\Doctrine\Query\AST\MysqlRand');
 //        if ($productionMode) {
 //            $configuration->setAutoGenerateProxyClasses(FALSE);
