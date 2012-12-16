@@ -15,10 +15,14 @@ class Mailer extends \Nette\Object
 	/** @var string */
 	protected $templatesPath;
 
-	function __construct($messageFactory, $application, $templatesPath) {
+    /** @var string */
+    protected $defaultFrom;
+
+	function __construct($messageFactory, $application, $templatesPath, $defaultFrom = null) {
 		$this->application = $application;
 		$this->messageFactory = $messageFactory;
 		$this->templatesPath = $templatesPath;
+        $this->defaultFrom = $defaultFrom;
 	}
 
 	public function createEmailTemplate($name) {
@@ -27,7 +31,11 @@ class Mailer extends \Nette\Object
 		return $template;
 	}
 
-	public function createMessage() {
-		return $this->messageFactory->invoke();
+	public function createMessage($useDefaultSender = true) {
+        $message = $this->messageFactory->invoke();
+        if($this->defaultFrom && $useDefaultSender){
+            $message->setFrom($this->defaultFrom);
+        }
+        return $message;
 	}
 }
