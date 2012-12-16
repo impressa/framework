@@ -9,9 +9,9 @@
 namespace Impressa\Config\Extensions;
 
 use Nette\Config\Configurator,
-Nette\DI\ContainerBuilder,
-Doctrine\Common\Cache\Cache,
-Nette\Framework;
+    Nette\DI\ContainerBuilder,
+    Doctrine\Common\Cache\Cache,
+    Nette\Framework;
 
 class ImpressaExtension extends \Nette\Config\CompilerExtension
 {
@@ -21,16 +21,18 @@ class ImpressaExtension extends \Nette\Config\CompilerExtension
             'basePath' => '/files/images',
             'mapping' => array(),
         ),
-		'mailer' => array(
-			'templatesPath' => '%appDir%/templates/Emails',
+
+        'mailer' => array(
+            'templatesPath' => '%appDir%/templates/Emails',
             'defaultSender' => null
-		)
+        )
+
     );
 
     public function loadConfiguration()
     {
 
-			$config = $this->getConfig($this->defaults);
+        $config = $this->getConfig($this->defaults);
         $container = $this->getContainerBuilder();
 
 //        $container->addDefinition('imageManager')->setClass('\Impressa\ImageManager\ImageService')
@@ -41,7 +43,7 @@ class ImpressaExtension extends \Nette\Config\CompilerExtension
 //        $container->addDefinition('ecomm')->setClass('\Impressa\Payments\Ecomm')
 //            ->setFactory('Impressa\Config\Extensions\Impressa::createEcommService',array($config['ecomm']['url'], $config['ecomm']['keyStore'], $config['ecomm']['keyStorePassword']));
 
-		$container->addDefinition($this->prefix('mailer'))->setClass('\Impressa\Mail\Mailer', array('@nette.mailFactory', '@application', $config['mailer']['templatesPath'], $config['mailer']['defaultSender']));
+        $container->addDefinition($this->prefix('mailer'))->setClass('\Impressa\Mail\Mailer', array('@nette.mailFactory', '@application', $config['mailer']['templatesPath'], $config['mailer']['defaultSender']));
     }
 
 
@@ -50,21 +52,23 @@ class ImpressaExtension extends \Nette\Config\CompilerExtension
      *
      * @param \Nette\Config\Configurator $configurator
      */
-    public static function register(\Nette\Config\Configurator $configurator) {
+    public static function register(\Nette\Config\Configurator $configurator)
+    {
         $class = get_called_class();
-        $configurator->onCompile[] = function(Configurator $configurator, \Nette\Config\Compiler $compiler) use($class) {
+        $configurator->onCompile[] = function (Configurator $configurator, \Nette\Config\Compiler $compiler) use ($class) {
             $compiler->addExtension('impressa', new $class);
         };
     }
 
-    public static function createImageManager($wwwDir, $params){
+    public static function createImageManager($wwwDir, $params)
+    {
         return new \Impressa\ImageManager\ImageService($wwwDir, $params['basePath'], $params['mapping']);
     }
 
-    public static function createEcommService($url, $keystore, $keystorePassword, $verbose = false){
+    public static function createEcommService($url, $keystore, $keystorePassword, $verbose = false)
+    {
         return new \Impressa\Payments\Ecomm($url, $keystore, $keystorePassword, $verbose);
     }
-
 
 
 }
