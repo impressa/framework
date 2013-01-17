@@ -35,10 +35,10 @@ class ImpressaExtension extends \Nette\Config\CompilerExtension
         $config = $this->getConfig($this->defaults);
         $container = $this->getContainerBuilder();
 
-//        $container->addDefinition('imageManager')->setClass('\Impressa\ImageManager\ImageService')
-//            ->setFactory('Impressa\Config\Extensions\Impressa::createImageManager',array('%wwwDir%', $config['imageManager']));
-//        $latte = $container->getDefinition('nette.latte');
-//        $latte->addSetup('\Impressa\ImageManager\ImageService::installLatteMacros', array('@nette.latte'));
+        $container->addDefinition('imageManager')->setClass('\Impressa\ImageManager\ImageService')
+            ->setFactory('Impressa\Config\Extensions\ImpressaExtension::createImageManager',array('%wwwDir%', $config['imageManager']));
+        $latte = $container->getDefinition('nette.latte');
+        $latte->addSetup('\Impressa\ImageManager\ImageService::installLatteMacros', array('@nette.latte'));
 //
 //        $container->addDefinition('ecomm')->setClass('\Impressa\Payments\Ecomm')
 //            ->setFactory('Impressa\Config\Extensions\Impressa::createEcommService',array($config['ecomm']['url'], $config['ecomm']['keyStore'], $config['ecomm']['keyStorePassword']));

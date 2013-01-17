@@ -147,7 +147,7 @@ class ImageService extends \Nette\Object
             } else {
                 $crop = "true";
             }
-            return $writer->write(" echo \$presenter->context->imageManager->getImageUrl($path, $width, $height, $crop); ");
+            return $writer->write(" echo \$basePath . \$presenter->context->imageManager->getImageUrl($path, $width, $height, $crop); ");
         });
     }
 
