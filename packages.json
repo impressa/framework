@@ -1,9 +1,0 @@
-{
-    "packages": {
-	"impressa/framework": {
-		"master": { @composer.json }	
-	
-	}
-    }
-
-}
