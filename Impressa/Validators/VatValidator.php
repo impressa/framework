@@ -11,9 +11,8 @@ namespace Impressa\Validator;
  * @author puty
  */
 class VatValidator {
-    
-    
-    public static function validate($control){
+
+   public static function validate($control){
 
         if(is_string($control)){
             $value = $control;
