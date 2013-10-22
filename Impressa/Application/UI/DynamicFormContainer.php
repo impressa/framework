@@ -455,7 +455,7 @@ class DynamicFormContainer extends Nette\Forms\Container
 		}
 
 		Nette\Forms\Container::extensionMethod($methodName, function (Nette\Forms\Container $_this, $name, $factory, $createDefault = 0, $forceDefault = FALSE) {
-			$control = new Container($factory, $createDefault, $forceDefault);
+			$control = new DynamicFormContainer($factory, $createDefault, $forceDefault);
 			$control->currentGroup = $_this->currentGroup;
 			return $_this[$name] = $control;
 		});
@@ -465,7 +465,7 @@ class DynamicFormContainer extends Nette\Forms\Container
 		}
 
 		SubmitButton::extensionMethod('addRemoveOnClick', function (SubmitButton $_this, $callback = NULL) {
-			$replicator = $_this->lookup(__NAMESPACE__ . '\Container');
+			$replicator = $_this->lookup(__NAMESPACE__ . '\DynamicFormContainer');
 			$_this->setValidationScope(FALSE);
 			$_this->onClick[] = function (SubmitButton $button) use ($replicator, $callback) {
 				/** @var Container $replicator */
@@ -477,10 +477,10 @@ class DynamicFormContainer extends Nette\Forms\Container
 			return $_this;
 		});
 
-		SubmitButton::extensionMethod('addCreateOnClick', function (SubmitButton $_this, $allowEmpty = FALSE, $callback = NULL, $name = NULL) {
-			$replicator = $_this->lookup(__NAMESPACE__ . '\DynamicForm');
+		SubmitButton::extensionMethod('addCreateOnClick', function (SubmitButton $_this, $allowEmpty = FALSE, $callback = NULL, $nameCallback = NULL) {
+			$replicator = $_this->lookup(__NAMESPACE__ . '\DynamicFormContainer');
 
-			$_this->onClick[] = function (SubmitButton $button) use ($replicator, $allowEmpty, $callback, $name) {
+			$_this->onClick[] = function (SubmitButton $button) use ($replicator, $allowEmpty, $callback, $nameCallback) {
 				/** @var Container $replicator */
 				if (!is_bool($allowEmpty)) {
 					$callback = callback($allowEmpty);
@@ -490,6 +490,9 @@ class DynamicFormContainer extends Nette\Forms\Container
 					return;
 				}
 
+				if (is_callable($nameCallback)) {
+					$name = callback($nameCallback)->invoke();
+				}
 				$newContainer = $replicator->createOne($name);
 				if (is_callable($callback)) {
 					callback($callback)->invoke($replicator, $newContainer);
