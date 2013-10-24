@@ -490,6 +490,7 @@ class DynamicFormContainer extends Nette\Forms\Container
 					return;
 				}
 
+				$name = NULL;
 				if (is_callable($nameCallback)) {
 					$name = callback($nameCallback)->invoke();
 				}
