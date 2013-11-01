@@ -1,0 +1,19 @@
+{
+	"name": "impressa/framework",
+	"description": "Impressa Nette framework",
+	"keywords": ["nette", "impressa"],
+	"homepage": "http://www.impressa.sk",
+	"authors": [
+		{
+			"name": "Impressa, internetova agentura, s.r.o.",
+			"email": "david.melich@impressa.sk"
+		}
+	],
+	"require": {
+		"php": ">=5.3.2",
+		"nette/nette": "2.0.*"
+	},
+	"autoload": {
+		"classmap": ["Impressa/"]
+	}
+}
