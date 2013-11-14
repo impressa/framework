@@ -43,7 +43,8 @@ class ImpressaExtension extends \Nette\Config\CompilerExtension
 //        $container->addDefinition('ecomm')->setClass('\Impressa\Payments\Ecomm')
 //            ->setFactory('Impressa\Config\Extensions\Impressa::createEcommService',array($config['ecomm']['url'], $config['ecomm']['keyStore'], $config['ecomm']['keyStorePassword']));
 
-        $container->addDefinition($this->prefix('mailer'))->setClass('\Impressa\Mail\Mailer', array('@nette.mailFactory', '@application', $config['mailer']['templatesPath'], $config['mailer']['defaultSender']));
+        $container->addDefinition($this->prefix('mailer'))
+			->setClass('\Impressa\Mail\Mailer', array('@nette.mailFactory', '@application', $config['mailer']['templatesPath'], $config['mailer']['defaultSender']));
     }
 
 
