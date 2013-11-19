@@ -49,10 +49,6 @@ class OdmExtension extends \Nette\Config\CompilerExtension
 		$configuration->setHydratorDir($config['hydratorDir']);
 		$configuration->setHydratorNamespace('Hydrators');
 
-		/*$isProductionMode = $params['productionMode'];
-		$configuration->setAutoGenerateHydratorClasses(!$isProductionMode);
-		$configuration->setAutoGenerateProxyClasses(!$isProductionMode);*/
-
 		\Doctrine\Common\Annotations\AnnotationRegistry::registerFile(VENDORS_DIR . '/doctrine/mongodb-odm/lib/Doctrine/ODM/MongoDB/Mapping/Annotations/DoctrineAnnotations.php');
 
 		$reader = new AnnotationReader();
