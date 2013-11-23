@@ -7,11 +7,7 @@ use Doctrine\Common\ClassLoader,
 	Doctrine\ODM\MongoDB\Configuration,
 	Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
 
-/**
- * Description of DocumentManager
- *
- * @author Martin Bažík
- */
+
 class OdmExtension extends \Nette\Config\CompilerExtension
 {
 	/**

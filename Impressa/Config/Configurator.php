@@ -23,7 +23,7 @@ class Configurator extends \Nette\Config\Configurator
         $compiler =  parent::createCompiler();
         $compiler->addExtension('doctrine', new \Impressa\Config\Extensions\DoctrineExtension())
                 ->addExtension('impressa', new \Impressa\Config\Extensions\ImpressaExtension())
-				->addExtension('odm', new \Impressa\Config\Extensions\DocumentManagerExtension())
+				->addExtension('odm', new \Impressa\Config\Extensions\OdmExtension())
                 ->addExtension('console', new \Impressa\Config\Extensions\ConsoleExtension());
         return $compiler;
     }
