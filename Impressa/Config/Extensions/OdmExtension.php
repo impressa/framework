@@ -20,24 +20,22 @@ class OdmExtension extends \Nette\Config\CompilerExtension
 		$container = $this->getContainerBuilder();
 		$this->initDefaultParameters($container);
 
-		$config = $this->getConfig();
-
 		$container->addDefinition($this->prefix('connection'))
 			->setClass('Doctrine\MongoDB\Connection')
 			->setFactory('Impressa\Config\Extensions\OdmExtension::createConnection');
 
 		$container->addDefinition($this->prefix('annotation'))
 			->setClass('Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver')
-			->setFactory('Impressa\Config\Extensions\OdmExtension::createAnnotationDriver', array($config));
+			->setFactory('Impressa\Config\Extensions\OdmExtension::createAnnotationDriver', array('%mongo%'));
 
 		$container->addDefinition($this->prefix('configuration'))
 			->setClass('Doctrine\ODM\MongoDB\Configuration')
-			->setFactory('Impressa\Config\Extensions\OdmExtension::createConfiguration', array($config, $this->prefix('@annotation')));
+			->setFactory('Impressa\Config\Extensions\OdmExtension::createConfiguration', array('%mongo%', $this->prefix('@annotation')));
 
 		$container->addDefinition($this->prefix("documentManager"))
 			->setClass('\Doctrine\ODM\MongoDB\DocumentManager')
-			->setFactory('Impressa\Config\Extensions\OdmExtension::createDocumentManager', array($this->prefix('@connection'),$this->prefix('@configuration'),'@doctrine.eventManager'))
-			->setAutowired(FALSE);
+			->setFactory('Impressa\Config\Extensions\OdmExtension::createDocumentManager', array($this->prefix('@connection'),$this->prefix('@configuration'),'@doctrine.eventManager'));
+		//->setAutowired(FALSE);
 	}
 
 	/**
@@ -62,7 +60,7 @@ class OdmExtension extends \Nette\Config\CompilerExtension
 		return \Doctrine\ODM\MongoDB\DocumentManager::create($connection, $configuration, $eventManager);
 	}
 
-	public function createConnection(){
+	public static function createConnection(){
 		return new Connection();
 	}
 
