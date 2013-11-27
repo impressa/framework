@@ -1,12 +1,12 @@
 <?php
 namespace Impressa\Config\Extensions;
 
-use Doctrine\Common\ClassLoader,
-	Doctrine\Common\Annotations\AnnotationReader,
+use Doctrine\Common\Annotations\AnnotationReader,
 	Doctrine\MongoDB\Connection,
 	Doctrine\ODM\MongoDB\Configuration,
+	Nette\DI\ContainerBuilder,
+	Nette\Config\Configurator,
 	Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver;
-
 
 class OdmExtension extends \Nette\Config\CompilerExtension
 {
@@ -15,51 +15,99 @@ class OdmExtension extends \Nette\Config\CompilerExtension
 	 *
 	 * @return void
 	 */
-	public function loadConfiguration()
-	{
+	public function loadConfiguration() {
 
 		$container = $this->getContainerBuilder();
+		$this->initDefaultParameters($container);
 
 		$config = $this->getConfig();
 
-		// console application
-		$container->addDefinition($this->prefix('odm'))
-			->setClass('\Doctrine\ODM\MongoDB\DocumentManager')
-			->setFactory('Extensions\DocumentManagerExtension::createDocumentManager', array('@container', $config))
-			->setAutowired(FALSE);
+		$container->addDefinition($this->prefix('connection'))
+			->setClass('Doctrine\MongoDB\Connection')
+			->setFactory('Impressa\Config\Extensions\OdmExtension::createConnection');
 
-		// aliases
-		$container->addDefinition('documentManager')
+		$container->addDefinition($this->prefix('annotation'))
+			->setClass('Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver')
+			->setFactory('Impressa\Config\Extensions\OdmExtension::createAnnotationDriver', array($config));
+
+		$container->addDefinition($this->prefix('configuration'))
+			->setClass('Doctrine\ODM\MongoDB\Configuration')
+			->setFactory('Impressa\Config\Extensions\OdmExtension::createConfiguration', array($config, $this->prefix('@annotation')));
+
+		$container->addDefinition($this->prefix("documentManager"))
 			->setClass('\Doctrine\ODM\MongoDB\DocumentManager')
-			->setFactory('@container::getService', array($this->prefix('documentManager')));
+			->setFactory('Impressa\Config\Extensions\OdmExtension::createDocumentManager', array($this->prefix('@connection'),$this->prefix('@configuration'),'@doctrine.eventManager'))
+			->setAutowired(FALSE);
 	}
 
-	public static function createDocumentManager(\Nette\DI\Container $container, $config)
+	/**
+	 * @param \Nette\DI\ContainerBuilder
+	 */
+	protected function initDefaultParameters(ContainerBuilder $container)
 	{
-		$params = $container->parameters;
+		$container->parameters = \Nette\Utils\Arrays::mergeTree($container->parameters,
+																array(
+																	 'mongo' => array(
+																		 'proxyDir'              	=> "%appDir%/model/Proxies",
+																		 'proxyNamespace'         	=> 'App\Model\Proxies',
+																		 'hydDir'					=> "%appDir%/model/Hydrators",
+																		 'hydNamespace'         	=> 'App\Model\Hydrators',
+																		 'docDir'         	 		=> "%appDir%/model/Documents"
+																	 )
+																));
+	}
+
+	public static function createDocumentManager($connection, $configuration, $eventManager)
+	{
+		return \Doctrine\ODM\MongoDB\DocumentManager::create($connection, $configuration, $eventManager);
+	}
+
+	public function createConnection(){
+		return new Connection();
+	}
+
+	public static function createConfiguration($config, $annotationDriver){
+
+		//TODO WTF
+		/*if (!file_exists($file = LIBS_DIR . '/autoload.php')) {
+		throw new RuntimeException('Install dependencies to run this script.');
+		}
+
+		$loader = require_once $file;
+		$loader->add('Documents', "%appDir%/model/");*/
+
 		$configuration = new Configuration();
 
-		$configuration->setProxyDir("%appDir%/model/Proxies");
-		$configuration->setProxyNamespace('App\Model\Proxies');
+		$configuration->setProxyDir($config["proxyDir"]);
+		$configuration->setProxyNamespace($config["proxyNamespace"]);
 
-		$configuration->setHydratorDir($config['hydratorDir']);
-		$configuration->setHydratorNamespace('Hydrators');
+		$configuration->setHydratorDir($config["hydDir"]);
+		$configuration->setHydratorNamespace($config["hydNamespace"]);
 
-		\Doctrine\Common\Annotations\AnnotationRegistry::registerFile(VENDORS_DIR . '/doctrine/mongodb-odm/lib/Doctrine/ODM/MongoDB/Mapping/Annotations/DoctrineAnnotations.php');
+		$configuration->setDefaultDB($config["dbName"]);
+		$configuration->setMetadataDriverImpl($annotationDriver);
 
-		$reader = new AnnotationReader();
-		$driverImpl = new AnnotationDriver($reader, '%appDir%/model/Documents');
-
-		$configuration->setMetadataDriverImpl($driverImpl);
-
-		$configuration->setDefaultDB('test');
-
-		$mongo = new \Mongo('mongodb://localhost', array('connect' => true));
-		$connection = new Connection($mongo);
-		$dm = \Doctrine\ODM\MongoDB\DocumentManager::create($connection, $configuration);
-
-		return $dm;
+		return $configuration;
 	}
 
+	public static function createAnnotationDriver($config){
 
+		\Doctrine\Common\Annotations\AnnotationRegistry::registerFile( LIBS_DIR . '/doctrine/mongodb-odm/lib/Doctrine/ODM/MongoDB/Mapping/Annotations/DoctrineAnnotations.php');
+
+		$reader = new AnnotationReader();
+		return new AnnotationDriver($reader, $config["docDir"]);
+	}
+
+	/**
+	 * Register extension to compiler.
+	 *
+	 * @param \Nette\Config\Configurator $configurator
+	 */
+	public static function register(Configurator $configurator)
+	{
+		$class = get_called_class();
+		$configurator->onCompile[] = function (Configurator $configurator, \Nette\Config\Compiler $compiler) use ($class) {
+			$compiler->addExtension('odm', new $class);
+		};
+	}
 }
