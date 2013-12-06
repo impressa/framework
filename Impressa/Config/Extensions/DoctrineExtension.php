@@ -237,14 +237,14 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
 
         $configuration->addCustomNumericFunction('RAND', 'Impressa\Doctrine\Query\AST\MysqlRand');
 
-        if ($productionMode) {
-            $configuration->setAutoGenerateProxyClasses(FALSE);
-        } else {
-            if ($logger) {
-                $configuration->setSQLLogger($logger);
-            }
-            $configuration->setAutoGenerateProxyClasses(TRUE);
-        }
+		if ($productionMode) {
+			$configuration->setAutoGenerateProxyClasses(\Doctrine\Common\Proxy\AbstractProxyFactory::AUTOGENERATE_FILE_NOT_EXISTS);
+		} else {
+			if ($logger) {
+				$configuration->setSQLLogger($logger);
+			}
+			$configuration->setAutoGenerateProxyClasses(TRUE);
+		}
 
         return $configuration;
     }
