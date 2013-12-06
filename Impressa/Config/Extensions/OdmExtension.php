@@ -21,20 +21,20 @@ class OdmExtension extends \Nette\Config\CompilerExtension
 		$this->initDefaultParameters($container);
 
 		$container->addDefinition($this->prefix('connection'))
-			->setClass('Doctrine\MongoDB\Connection')
-			->setFactory('Impressa\Config\Extensions\OdmExtension::createConnection');
+				  ->setClass('Doctrine\MongoDB\Connection')
+				  ->setFactory('Impressa\Config\Extensions\OdmExtension::createConnection');
 
 		$container->addDefinition($this->prefix('annotation'))
-			->setClass('Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver')
-			->setFactory('Impressa\Config\Extensions\OdmExtension::createAnnotationDriver', array('%mongo%'));
+				  ->setClass('Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver')
+				  ->setFactory('Impressa\Config\Extensions\OdmExtension::createAnnotationDriver', array('%mongo%'));
 
 		$container->addDefinition($this->prefix('configuration'))
-			->setClass('Doctrine\ODM\MongoDB\Configuration')
-			->setFactory('Impressa\Config\Extensions\OdmExtension::createConfiguration', array('%mongo%', $this->prefix('@annotation')));
+				  ->setClass('Doctrine\ODM\MongoDB\Configuration')
+				  ->setFactory('Impressa\Config\Extensions\OdmExtension::createConfiguration', array('%mongo%', $this->prefix('@annotation')));
 
 		$container->addDefinition($this->prefix("documentManager"))
-			->setClass('\Doctrine\ODM\MongoDB\DocumentManager')
-			->setFactory('Impressa\Config\Extensions\OdmExtension::createDocumentManager', array($this->prefix('@connection'),$this->prefix('@configuration'),'@doctrine.eventManager'));
+				  ->setClass('\Doctrine\ODM\MongoDB\DocumentManager')
+				  ->setFactory('Impressa\Config\Extensions\OdmExtension::createDocumentManager', array($this->prefix('@connection'),$this->prefix('@configuration')));
 		//->setAutowired(FALSE);
 	}
 
@@ -44,18 +44,18 @@ class OdmExtension extends \Nette\Config\CompilerExtension
 	protected function initDefaultParameters(ContainerBuilder $container)
 	{
 		$container->parameters = \Nette\Utils\Arrays::mergeTree($container->parameters,
-																array(
-																	 'mongo' => array(
-																		 'proxyDir'              	=> "%appDir%/model/Proxies",
-																		 'proxyNamespace'         	=> 'App\Model\Proxies',
-																		 'hydDir'					=> "%appDir%/model/Hydrators",
-																		 'hydNamespace'         	=> 'App\Model\Hydrators',
-																		 'docDir'         	 		=> "%appDir%/model/Documents"
-																	 )
-																));
+			array(
+				'mongo' => array(
+					'proxyDir'              	=> "%appDir%/model/Proxies",
+					'proxyNamespace'         	=> 'App\Model\Proxies',
+					'hydDir'					=> "%appDir%/model/Hydrators",
+					'hydNamespace'         	=> 'App\Model\Hydrators',
+					'docDir'         	 		=> "%appDir%/model/Documents"
+				)
+			));
 	}
 
-	public static function createDocumentManager($connection, $configuration, $eventManager)
+	public static function createDocumentManager($connection, $configuration, $eventManager = null)
 	{
 		return \Doctrine\ODM\MongoDB\DocumentManager::create($connection, $configuration, $eventManager);
 	}
