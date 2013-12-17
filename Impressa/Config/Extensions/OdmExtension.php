@@ -50,7 +50,8 @@ class OdmExtension extends \Nette\Config\CompilerExtension
 					'proxyNamespace'         	=> 'App\Model\Proxies',
 					'hydDir'					=> "%appDir%/model/Hydrators",
 					'hydNamespace'         	=> 'App\Model\Hydrators',
-					'docDir'         	 		=> "%appDir%/model/Documents"
+					'docDir'         	 		=> "%appDir%/model/Documents",
+					'autoGenerate'				=> true
 				)
 			));
 	}
@@ -84,6 +85,8 @@ class OdmExtension extends \Nette\Config\CompilerExtension
 
 		$configuration->setDefaultDB($config["dbName"]);
 		$configuration->setMetadataDriverImpl($annotationDriver);
+
+		$configuration->setAutoGenerateHydratorClasses($config['autoGenerate']);
 
 		return $configuration;
 	}
