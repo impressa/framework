@@ -21,9 +21,10 @@ class Configurator extends \Nette\Config\Configurator
     protected function createCompiler()
     {
         $compiler =  parent::createCompiler();
-        $compiler->addExtension('doctrine', new \Impressa\Config\Extensions\DoctrineExtension())
-                ->addExtension('impressa', new \Impressa\Config\Extensions\ImpressaExtension())
-                ->addExtension('console', new \Impressa\Config\Extensions\ConsoleExtension());
+        $compiler
+			->addExtension('impressa', new \Impressa\Config\Extensions\ImpressaExtension())
+			//->addExtension('doctrine', new \Impressa\Config\Extensions\DoctrineExtension())
+            ->addExtension('console', new \Impressa\Config\Extensions\ConsoleExtension());
         return $compiler;
     }
 
