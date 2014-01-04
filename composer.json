@@ -13,7 +13,7 @@
 	"license": "New BSD",
 	"require": {
 		"php": ">=5.3.2",
-		"nette/nette": "2.0.*"
+		"nette/nette": ">=2.0.*"
 	},
 	"autoload": {
 		"classmap": ["Impressa/"]
