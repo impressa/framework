@@ -4,7 +4,7 @@
  * @param array     $steps
  *}
 
-{if $paginator->pageCount > 1}
+{if $paginator->pageCount > 1 || ( $paginator->pageCount >= 1 && $singlePageNavigation)}
 <div class="paginator clearfix">
 	{if $paginator->isFirst()}
 	<span class="prev">« Naspäť</span>
