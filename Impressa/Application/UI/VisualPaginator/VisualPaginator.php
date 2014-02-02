@@ -35,6 +35,8 @@ class VisualPaginator extends Control
 	/** @persistent */
 	public $page ;
 
+	private $singlePageNavigation = false;
+
         protected $templatePath;
         
         function __construct($parent, $name) {
@@ -61,6 +63,7 @@ class VisualPaginator extends Control
 	 */
 	public function render()
 	{
+
 		$paginator = $this->getPaginator();
 		$page = $paginator->page;
 		if ($paginator->pageCount < 2) {
@@ -78,6 +81,7 @@ class VisualPaginator extends Control
 		}
 
 		$this->template->steps = $steps;
+		$this->template->singlePageNavigation = $this->singlePageNavigation;
 		$this->template->paginator = $paginator;
 		$this->template->setFile($this->templatePath);
 		$this->template->render();
@@ -99,5 +103,9 @@ class VisualPaginator extends Control
         public function setTemplate($path){
             $this->templatePath = $path;
         }
+
+	public function showSinglePageNavigation($show){
+		$this->singlePageNavigation = $show;
+	}
 
 }
