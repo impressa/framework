@@ -28,7 +28,9 @@ class Message extends \Nette\Mail\Message
 	public function send()
 	{
 		if ($this->defaultReceiver){
-			parent::addTo($this->defaultReceiver);
+			foreach ($this->defaultReceiver as $mail){
+				parent::addTo($mail);
+			}
 		}
 
 		parent::send();
