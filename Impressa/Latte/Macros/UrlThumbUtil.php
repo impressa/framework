@@ -33,9 +33,9 @@ class UrlThumbUtil
 				umask($old);
 			}
 
-			if (!self::checkRemoteFile($url)) {
-				$url = 'http://www.designofsignage.com/application/symbol/building/image/600x600/no-photo.jpg';
-			}
+			//			if (!self::checkRemoteFile($url)) {
+			//				$url = 'http://www.designofsignage.com/application/symbol/building/image/600x600/no-photo.jpg';
+			//			}
 
 			try {
 				$thumb = \Nette\Image::fromFile($url);
@@ -60,20 +60,20 @@ class UrlThumbUtil
 		return $thumbPath;
 	}
 
-	public static function checkRemoteFile($url)
-	{
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		// don't download content
-		curl_setopt($ch, CURLOPT_NOBODY, 1);
-		curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		if (curl_exec($ch) !== FALSE) {
-			return TRUE;
-		} else {
-			return FALSE;
-		}
-	}
+	//	public static function checkRemoteFile($url)
+	//	{
+	//		$ch = curl_init();
+	//		curl_setopt($ch, CURLOPT_URL, $url);
+	//		// don't download content
+	//		curl_setopt($ch, CURLOPT_NOBODY, 1);
+	//		curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+	//		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	//		if (curl_exec($ch) !== FALSE) {
+	//			return TRUE;
+	//		} else {
+	//			return FALSE;
+	//		}
+	//	}
 }
 
 
