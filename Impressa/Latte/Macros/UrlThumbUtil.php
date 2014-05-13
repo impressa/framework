@@ -40,16 +40,18 @@ class UrlThumbUtil
 			try {
 				$thumb = \Nette\Image::fromFile($url);
 
-				if ($thumb->getWidth() > $thumb->getHeight()) {
-					$thumb->resize(NULL, $height);
-				} else {
-					$thumb->resize($width, NULL);
-				}
-				$left = ($thumb->getWidth() - $width) / 2;
-				$left = $left <= 0 ? 0 : (int)$left;
-				$top = ($thumb->getHeight() - $height) / 2;
-				$top = $top <= 0 ? 0 : (int)$top;
-				$thumb->crop($left, $top, $width, $height);
+				//				if ($thumb->getWidth() > $thumb->getHeight()) {
+				//					$thumb->resize(NULL, $height);
+				//				} else {
+				//					$thumb->resize($width, NULL);
+				//				}
+				//				$left = ($thumb->getWidth() - $width) / 2;
+				//				$left = $left <= 0 ? 0 : (int)$left;
+				//				$top = ($thumb->getHeight() - $height) / 2;
+				//				$top = $top <= 0 ? 0 : (int)$top;
+				//				$thumb->crop($left, $top, $width, $height);
+
+				$thumb->resize($width, $height, \Nette\Image::EXACT);
 				$thumb->save($fullPath, '80%', \Nette\Image::JPEG);
 			} catch (\Nette\UnknownImageFileException $e) {
 
