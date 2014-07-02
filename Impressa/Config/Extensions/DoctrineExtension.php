@@ -116,7 +116,7 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
 		$drv = new \Doctrine\ORM\Mapping\Driver\AnnotationDriver(
 			new \Doctrine\Common\Annotations\CachedReader(
 				new \Doctrine\Common\Annotations\AnnotationReader(),
-				new \Doctrine\Common\Cache\ApcCache() // cache you want
+				new \Doctrine\Common\Cache\ArrayCache() // cache you want
 			),
 			\Nette\DI\Helpers::expand('%database.entityDirs%', $container->parameters, TRUE)
 		);
@@ -237,7 +237,7 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
 					  new \Doctrine\ORM\Mapping\Driver\AnnotationDriver(
 						  new \Doctrine\Common\Annotations\CachedReader(
 							  new \Doctrine\Common\Annotations\AnnotationReader(),
-							  new \Doctrine\Common\Cache\ApcCache() // cache you want
+							  new \Doctrine\Common\Cache\ArrayCache() // cache you want
 						  ),
 						  $config['entityDirs'])
 		);
