@@ -69,7 +69,7 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
 				  ->setClass('Doctrine\ORM\Configuration')
 				  ->setFactory('Impressa\Config\Extensions\DoctrineExtension::createConfiguration', array(
 					  $this->prefix('@cache'), $this->prefix('@cache'),
-					  '%database%', '%tempDir%', $this->prefix('@logger'), '%productionMode%'
+					  '%database%', $this->prefix('@logger'), '%productionMode%'
 				  ));
 
 		// event manager
@@ -116,7 +116,7 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
 		$drv = new \Doctrine\ORM\Mapping\Driver\AnnotationDriver(
 			new \Doctrine\Common\Annotations\CachedReader(
 				new \Doctrine\Common\Annotations\AnnotationReader(),
-				new \Doctrine\Common\Cache\PhpFileCache($container->parameters['tempDir'] . "/cache/fileCache") // cache you want
+				new \Doctrine\Common\Cache\ApcCache() // cache you want
 			),
 			\Nette\DI\Helpers::expand('%database.entityDirs%', $container->parameters, TRUE)
 		);
@@ -168,8 +168,7 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
 
 	}
 
-	public static function getSomething()
-	{
+	public static function getSomething(){
 
 	}
 
@@ -180,12 +179,12 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
 	{
 		$container->parameters = \Nette\Utils\Arrays::mergeTree($container->parameters, array(
 			'database' => array(
-				'proxyDir'               => "%appDir%/model/Proxies",
-				'proxyNamespace'         => 'App\Model\Proxies',
-				'entityDirs'             => array('%appDir%/model/Entities'),
-				'mappings'               => array('%appDir%/model/Mappings'),
+				'proxyDir' => "%appDir%/model/Proxies",
+				'proxyNamespace' => 'App\Model\Proxies',
+				'entityDirs' => array('%appDir%/model/Entities'),
+				'mappings' => array('%appDir%/model/Mappings'),
 				'useAnnotationNamespace' => TRUE,
-				'metadataDriver'         => "yaml"
+				'metadataDriver' => "yaml"
 			)
 		));
 	}
@@ -213,16 +212,17 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
 	}
 
 
+
 	/**
 	 *
 	 * @param \Doctrine\Common\Cache\Cache
 	 * @param \Doctrine\Common\Cache\Cache
 	 * @param array $config
 	 * @param \Doctrine\DBAL\Logging\SQLLogger|NULL
-	 * @param       bool
+	 * @param bool
 	 * @return \Doctrine\ORM\Configuration
 	 */
-	public static function createConfiguration(Cache $metadataCache, Cache $queryCache, array $config, $tempDir, \Doctrine\DBAL\Logging\SQLLogger $logger = NULL, $productionMode = FALSE)
+	public static function createConfiguration(Cache $metadataCache, Cache $queryCache, array $config, \Doctrine\DBAL\Logging\SQLLogger $logger = NULL, $productionMode = FALSE)
 	{
 		$configuration = new \Doctrine\ORM\Configuration;
 
@@ -237,9 +237,10 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
 					  new \Doctrine\ORM\Mapping\Driver\AnnotationDriver(
 						  new \Doctrine\Common\Annotations\CachedReader(
 							  new \Doctrine\Common\Annotations\AnnotationReader(),
-							  new \Doctrine\Common\Cache\PhpFileCache($tempDir . "/cache/fileCache/") // cache you want
+							  new \Doctrine\Common\Cache\ApcCache() // cache you want
 						  ),
-						  $config['entityDirs']));
+						  $config['entityDirs'])
+		);
 
 		// Proxies
 		$configuration->setProxyDir($config['proxyDir']);
@@ -312,6 +313,7 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
 			$compiler->addExtension('doctrine', new $class);
 		};
 	}
+
 
 
 }
