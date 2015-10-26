@@ -150,13 +150,13 @@ class DoctrineExtension extends \Nette\Config\CompilerExtension
 			->setClass('Impressa\Model\FacadeFactory');
 
 
-		foreach ($this->config['facades'] as $name => $class) {
-			$container->addDefinition($name)
-				->setFactory('@facadeFactory::createFacade', array($class, $this->prefix('@entityManager')))
-				->setClass($class);
-
-
-		}
+        if (isset($this->config['facades']) && !empty($this->config['facades'])){
+            foreach ($this->config['facades'] as $name => $class) {
+                $container->addDefinition($name)
+                          ->setFactory('@facadeFactory::createFacade', array($class, $this->prefix('@entityManager')))
+                          ->setClass($class);
+            }
+        }
 
     }
 
